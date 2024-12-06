@@ -13,27 +13,101 @@ func main() {
     let lines = inputString.components(separatedBy: "\n")
         .filter { !$0.isEmpty }
     
-    // Sample algorithm
-    var scoreboard = [String: Int]()
+    var hchars = [[Character]]()
     lines.forEach { line in
-        let (name, score) = parseLine(line)
-        scoreboard[name] = score
+        hchars.append(Array(line))
     }
-    scoreboard
-        .sorted { lhs, rhs in
-            lhs.value > rhs.value
+
+    var totalCount = 0
+    for i in 0..<hchars.count {
+        for j in 0..<hchars[i].count {
+            if hchars[i][j] == "X" {
+                totalCount +=
+                topLeft(i, j, chars: hchars) +
+                topRight(i, j, chars: hchars) +
+                bottomLeft(i, j, chars: hchars) +
+                bottomRight(i, j, chars: hchars) +
+                left(i, j, chars: hchars) +
+                right(i, j, chars: hchars) +
+                top(i, j, chars: hchars) +
+                bottom(i, j, chars: hchars)
+            }
         }
-        .forEach { name, score in
-            print("\(name) \(score) pts")
-        }
+    }
+    
+    print(totalCount)
 }
 
-func parseLine(_ line: String) -> (name: String, score: Int) {
-    let helper = RegexHelper(pattern: #"([\-\w]*)\s(\d+)"#)
-    let result = helper.parse(line)
-    let name = result[0]
-    let score = Int(result[1])!
-    return (name: name, score: score)
+func topLeft(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if i < 3 || j < 3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i-1][j-1], chars[i-2][j-2], chars[i-3][j-3]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
+}
+
+func topRight(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if i < 3 || j >= chars[i].count-3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i-1][j+1], chars[i-2][j+2], chars[i-3][j+3]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
+}
+
+func bottomLeft(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if i >= chars.count-3 || j < 3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i+1][j-1], chars[i+2][j-2], chars[i+3][j-3]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
+}
+
+func bottomRight(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if i >= chars.count-3 || j >= chars[i].count-3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i+1][j+1], chars[i+2][j+2], chars[i+3][j+3]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
+}
+
+func left(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if j < 3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i][j-1], chars[i][j-2], chars[i][j-3]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
+}
+
+func right(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if j >= chars[i].count-3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i][j+1], chars[i][j+2], chars[i][j+3]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
+}
+
+func top(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if i < 3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i-1][j], chars[i-2][j], chars[i-3][j]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
+}
+
+func bottom(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    if i >= chars.count-3 {
+        return 0
+    }
+    return [
+        chars[i][j], chars[i+1][j], chars[i+2][j], chars[i+3][j]
+    ] == ["X", "M", "A", "S"] ? 1 : 0
 }
 
 main()
