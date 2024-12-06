@@ -18,6 +18,11 @@ func main() {
         hchars.append(Array(line))
     }
 
+    part1(hchars)
+    part2(hchars)
+}
+
+fileprivate func part1(_ hchars: [[Character]]) {
     var totalCount = 0
     for i in 0..<hchars.count {
         for j in 0..<hchars[i].count {
@@ -36,6 +41,34 @@ func main() {
     }
     
     print(totalCount)
+}
+
+fileprivate func part2(_ hchars: [[Character]]) {
+    var totalCount = 0
+    for i in 1..<hchars.count-1 {
+        for j in 1..<hchars[i].count-1 {
+            if hchars[i][j] == "A" {
+                totalCount +=
+                isItX(i, j, chars: hchars)
+            }
+        }
+    }
+    
+    print(totalCount)
+}
+
+func isItX(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
+    var xChars = [Character]()
+    xChars.append(chars[i-1][j-1])
+    xChars.append(chars[i+1][j-1])
+    xChars.append(chars[i-1][j+1])
+    xChars.append(chars[i+1][j+1])
+    let sCount = xChars.count { $0 == "S" }
+    let mCount = xChars.count { $0 == "M" }
+    return sCount == 2 && mCount == 2 &&
+    chars[i-1][j-1] != chars[i+1][j+1] &&
+    chars[i+1][j-1] != chars[i-1][j+1]
+    ? 1 : 0
 }
 
 func topLeft(_ i: Int, _ j: Int, chars: [[Character]]) -> Int {
